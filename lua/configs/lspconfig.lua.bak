@@ -1,0 +1,9 @@
+local lspconfig = require('lspconfig')
+
+-- Basic Pyright setup
+lspconfig.pyright.setup({
+  on_attach = function(client, bufnr)
+    -- Optional: Add keybindings or other configurations
+  end,
+})
+
