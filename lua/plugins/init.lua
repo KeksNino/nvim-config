@@ -8,21 +8,32 @@ return {
     opts = require "configs.conform",
   },
   {
-  "andweeb/presence.nvim",
+  "IogaMaster/neocord",
   opts = {
     show_time = true,
     buttons = true,
     enable_line_number = true,
-  },
+    global_timer = true,
+    },
 },
 
     -- Basic plugins
   { "nvim-lualine/lualine.nvim", lazy = false },
-  { "nvim-tree/nvim-tree.lua", lazy = false },
+  { "nvim-tree/nvim-tree.lua", enabled = false },
   { "karb94/neoscroll.nvim", lazy = false },
   { "lambdalisue/suda.vim", lazy = false },
   { "numToStr/Comment.nvim", lazy = false},
   { "mg979/vim-visual-multi", lazy = false},
+  { "tpope/vim-fugitive", lazy = false},
+  { "folke/persistence.nvim",
+    event = "BufReadPre",
+    config = true,
+  },
+  {
+  "folke/snacks.nvim",
+  priority = 1000,
+  lazy = false,
+  },
 
   { "nvim-treesitter/nvim-treesitter",
     lazy = false,
@@ -100,7 +111,7 @@ return {
           enabled = true,
           auto_trigger = true,
           keymap = {
-            accept = "<TAB>",
+            accept = "<S-TAB>",
             dismiss = "<C-e>",
           },
       },
@@ -139,13 +150,25 @@ return {
   -- CopilotChat
   {
     "CopilotC-Nvim/CopilotChat.nvim",
-    branch = "canary",
+    branch = "main",
     dependencies = {
       { "zbirenbaum/copilot.lua" },
       { "nvim-lua/plenary.nvim" },
     },
+    show_diff = {
+      full_diff = true
+    },
     opts = {
-      -- Add any specific options here
+      model = "claude-3.7-sonnet",
+      context = "buffer",
+      border = "rounded",
+      auto_insert_mode = true,
+      show_help = false,
+      mappings = {
+        submit_prompt = {
+          insert = '<C-CR>',
+      },
+    },
     },
     build = nil, -- Disable the build step
   },

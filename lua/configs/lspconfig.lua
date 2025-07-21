@@ -1,6 +1,6 @@
 require("mason").setup()
 require("mason-lspconfig").setup({
-  ensure_installed = { "pyright", "html", "cssls" },  -- Ensure pyright is installed
+  ensure_installed = { "pyright", "html", "cssls", "quick_lint_js" },  -- Ensure pyright is installed
 })
 
 -- Load lspconfig
@@ -8,7 +8,7 @@ local lspconfig = require("lspconfig")
 local nvlsp = require "nvchad.configs.lspconfig"
 
 -- Set up servers
-local servers = { "html", "cssls", "pyright" }
+local servers = { "html", "cssls", "pyright", "quick_lint_js" }
 
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup({
