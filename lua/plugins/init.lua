@@ -1,4 +1,6 @@
 return {
+
+  -- LSP / Mason
   { "williamboman/mason.nvim", opts = {} },
   { "williamboman/mason-lspconfig.nvim", opts = {} },
   { "WhoIsSethDaniel/mason-tool-installer.nvim"},
@@ -7,6 +9,8 @@ return {
     -- event = 'BufWritePre', -- uncomment for format on save
     opts = require "configs.conform",
   },
+
+  -- Misc
   {
   "IogaMaster/neocord",
   opts = {
@@ -20,19 +24,45 @@ return {
     -- Basic plugins
   { "nvim-lualine/lualine.nvim", lazy = false },
   { "nvim-tree/nvim-tree.lua", enabled = false },
-  { "karb94/neoscroll.nvim", lazy = false },
-  { "lambdalisue/suda.vim", lazy = false },
-  { "numToStr/Comment.nvim", lazy = false},
-  { "mg979/vim-visual-multi", lazy = false},
+  { "lambdalisue/suda.vim", lazy = true },
+  { "numToStr/Comment.nvim", lazy = true},
+  -- { "mg979/vim-visual-multi", lazy = false},
   { "tpope/vim-fugitive", lazy = false},
   { "folke/persistence.nvim",
     event = "BufReadPre",
     config = true,
   },
   {
+  "karb94/neoscroll.nvim",
+  lazy = true,
+  opts = {
+    hide_cursor = true,
+    stop_eof = true,
+    respect_scrolloff = true,
+    cursor_scrolls_alone = true,
+    },
+	},
+  {
   "folke/snacks.nvim",
   priority = 1000,
   lazy = false,
+  opts = {
+  bigfile = { enabled = true },
+  dashboard = { enabled = true },
+  explorer = {
+    enabled = true,
+    auto_close = true,
+  },
+  indent = { enabled = false },
+  input = { enabled = true },
+  picker = {enabled = true },
+  notifier = { enabled = true },
+  quickfile = { enabled = true },
+  scope = { enabled = true },
+  -- scroll = { enabled = true },
+  statuscolumn = { enabled = true },
+  words = { enabled = true },
+    },
   },
 
   { "nvim-treesitter/nvim-treesitter",
@@ -53,132 +83,31 @@ return {
   configs.setup(opts)
     end
   },
-  { "nvim-telescope/telescope.nvim", lazy = false },
---{
---  'fisadev/vim-isort',
---  ft = 'python',
---  config = function()
---    -- Ensure Python support is available
---    local python_support = vim.fn.has('python3')
---    if python_support == 1 then
---      vim.g.vim_isort_map = ''
---      vim.api.nvim_create_autocmd({"BufWritePre"}, {
---        pattern = "*.py",
---       callback = function()
---          vim.cmd("Isort")
---        end,
---      })
---    else
---     print("Python3 support is missing, vim-isort will be disabled.")
---    end
---  end
---},
 
-  {
-  'psf/black',
-  ft = 'python',
-  config = function ()
-    vim.api.nvim_create_autocmd({"BufWritePre"}, {
-      pattern = "*.py",
-      callback = function()
-        vim.cmd("Black")
-      end,
-    })
-    end
+
+  { "nvim-telescope/telescope.nvim",
+    lazy = true,
+    dependencies = {
+      { "BurntSushi/ripgrep" },
+      { "nvim-lua/plenary.nvim" },
+      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+      config = function()
+        -- vim.keymap.set("n", "<leader>ff", require ('telescope.builtin').find_files)
+        -- vim.keymap.set("n", "<leader>fw", require ('telescope.builtin').live_grep)
+        require('telescope.builtin').find_files()
+      end
+    }
   },
+
   {
     "xiyaowong/transparent.nvim",
     lazy = false, -- Disable lazy-loading
     priority = 1000, -- High priority to ensure it loads before other plugins
     config = function()
       require("transparent").setup({
-        extra_groups = { -- Example groups to clear
-          "NormalFloat", -- Add more highlight groups as needed
-          "NvimTreeNormal",
-        },
         exclude = {}, -- Groups you want to keep intact
       })
     end,
-  },
-
-  {
-  "zbirenbaum/copilot.lua",
-  cmd = "Copilot", -- Makes `:Copilot` available
-  event = "InsertEnter", -- Load when entering Insert mode
-  config = function()
-    require("copilot").setup({
-      suggestion = {
-          enabled = true,
-          auto_trigger = true,
-          keymap = {
-            accept = "<S-TAB>",
-            dismiss = "<C-e>",
-          },
-      },
-    })
-  end,
-  },
-  {
-  "zbirenbaum/copilot-cmp",
-  after = { "copilot.lua", "nvim-cmp" }, -- Ensure it loads after copilot and nvim-cmp
-  config = function()
-    require("copilot_cmp").setup()
-  end,
-  },
-
-  -- Rust vim Plugin
-  {
-    'mrcjkb/rustaceanvim',
-    version = '^5', -- Recommended
-    lazy = false, -- This plugin is already lazy
-    config = function ()
-      local mason_registry = require('mason-registry')
-      local codelldb = mason_registry.get_package("codelldb")
-      local extension_path = codelldb:get_install_path() .. "/extension"
-      local codelldb_path = extension_path .. "adapter/codelldb"
-      local liblldb_path = extension_path.. "lldb/lib/liblldb.dylib"
-      local cfg = require('rustaceanvim.config')
-
-      vim.g.rustaceanvim = {
-        dap = {
-          adapter = cfg.get_codelldb_adapter(codelldb_path, liblldb_path)
-        },
-      }
-    end
-  },
-
-  -- CopilotChat
-  {
-    "CopilotC-Nvim/CopilotChat.nvim",
-    branch = "main",
-    dependencies = {
-      { "zbirenbaum/copilot.lua" },
-      { "nvim-lua/plenary.nvim" },
-    },
-    show_diff = {
-      full_diff = true
-    },
-    opts = {
-      model = "claude-3.7-sonnet",
-      context = "buffer",
-      border = "rounded",
-      auto_insert_mode = true,
-      show_help = false,
-      mappings = {
-        submit_prompt = {
-          insert = '<C-CR>',
-      },
-    },
-    },
-    build = nil, -- Disable the build step
-  },
-
-  {
-    'rust-lang/rust.vim',
-    ft = "rust",
-    init = function ()
-      vim.g.rustfmt_autosave = 1
-    end
   },
 
   {
@@ -207,6 +136,96 @@ return {
       require("dapui").setup()
     end,
   },
+
+  -- AI
+
+  {
+  "zbirenbaum/copilot.lua",
+  cmd = "Copilot", -- Makes `:Copilot` available
+  event = "InsertEnter", -- Load when entering Insert mode
+  config = function()
+    require("copilot").setup({
+      suggestion = {
+          enabled = true,
+          auto_trigger = true,
+          keymap = {
+            accept = "<C-y>",
+            dismiss = "<C-e>",
+          },
+      },
+    })
+  end,
+  },
+
+
+  {
+  "zbirenbaum/copilot-cmp",
+  after = { "copilot.lua", "nvim-cmp" }, -- Ensure it loads after copilot and nvim-cmp
+  config = function()
+    require("copilot_cmp").setup()
+  end,
+  },
+
+
+  {
+    "CopilotC-Nvim/CopilotChat.nvim",
+    branch = "main",
+    dependencies = {
+      { "zbirenbaum/copilot.lua" },
+      { "nvim-lua/plenary.nvim" },
+    },
+    show_diff = {
+      full_diff = true
+    },
+    opts = {
+      model = "claude-3.7-sonnet",
+      context = "buffer",
+      border = "rounded",
+      auto_insert_mode = true,
+      show_help = false,
+      mappings = {
+        submit_prompt = {
+          insert = '<C-CR>',
+      },
+    },
+    },
+    build = nil, -- Disable the build step
+  },
+
+
+  -- PYTHON
+
+
+  -- RUST
+
+  {
+    'mrcjkb/rustaceanvim',
+    lazy = false,
+    version = '^6',
+    config = function()
+      local extension_path = vim.fn.expand("$HOME/.local/share/nvim/mason/packages/codelldb/extension")
+      local codelldb_path = extension_path .. "adapter/codelldb"
+      local liblldb_path = extension_path.. "lldb/lib/liblldb.dylib"
+      local cfg = require('rustaceanvim.config')
+
+      vim.g.rustaceanvim = {
+        dap = {
+          adapter = cfg.get_codelldb_adapter(codelldb_path, liblldb_path)
+        },
+      }
+    end
+    },
+
+
+    {
+    'rust-lang/rust.vim',
+    ft = "rust",
+    init = function ()
+      vim.g.rustfmt_autosave = 1
+    end
+    },
+
+
     {
     'saecki/crates.nvim',
     ft = {"toml"},

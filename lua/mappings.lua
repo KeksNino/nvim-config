@@ -1,35 +1,14 @@
 require "nvchad.mappings"
 
--- add yours here
-
 local map = vim.keymap.set
 
--- map("n", ";", ":", { desc = "CMD enter command mode" })
-vim.opt.mouse = ""
-
 map("i", "jk", "<ESC>")
--- vim.keymap.set('n', '<S-e>', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
 vim.api.nvim_del_keymap('n', '<C-n>')
-
--- Define the function globally
-function open_snacks_explorer(opts)
-  require('snacks').explorer.open(opts or {})
-end
-
--- Set the keybinding to call the function
-vim.api.nvim_set_keymap('n', '<leader>e', ':lua open_snacks_explorer()<CR>', { noremap = true, silent = true })
-
 
 vim.g.VM_maps = vim.g.VM_maps or {}
 vim.g.VM_maps['<C-n>'] = '<Plug>(VM-Find-Subword-Under)'
 vim.g.mapleader = " "
 vim.keymap.set("n", "<C-o>", ':CopilotChatOpen<CR>', { noremap = true, silent = true })
-vim.keymap.set("i", "<C-l>", function()
-  require("copilot.suggestion").accept()
-end, { noremap = true, silent = true })
-
-vim.api.nvim_set_keymap('', '<ScrollWheelUp>', '<Nop>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('', '<ScrollWheelDown>', '<Nop>', { noremap = true, silent = true })
 
 vim.keymap.set("n", "<leader>t", function()
   local word = vim.fn.expand("<cword>")
@@ -56,3 +35,5 @@ vim.keymap.set("n", "dd", '"_dd', { noremap = true })
 vim.keymap.set("v", "d", '"_d', { noremap = true })
 
 -- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
+
+map("n", "<leader>rg", "<cmd>Telescope live_grep<CR>", { desc = "telescope live grep" })

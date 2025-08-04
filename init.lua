@@ -54,7 +54,5 @@ vim.schedule(function()
   require("mappings")
 end)
 
-
 require('configs.lspconfig')
 require('configs.neoscroll')
-
